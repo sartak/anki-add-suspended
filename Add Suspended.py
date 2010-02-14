@@ -2,11 +2,10 @@
 
 """
 DESCRIPTION:
-Adds checkboxes to each field in the Add Items dialog so that they are
-not cleared after clicking add.
+Adds a "Add Suspended" button to the Add Items dialog.
 
-I personally use this for adding a few sentences from the same place,
-to avoid having to type/paste the same URL or title multiple times.
+I personally use this for adding sentences with kanji I haven't
+learned yet, but are otherwise easy.
 
 AUTHOR:
 Shawn M Moore (sartak@gmail.com)
