@@ -19,6 +19,32 @@ from PyQt4.QtCore import *
 from anki.utils import stripHTML, parseTags
 from anki.sound import clearAudioQueue
 
+def reportAddedSuspendedFact(self, fact):
+    self.dialog.status.append(
+        _("Added %(num)d suspended card(s) for <a href=\"%(id)d\">"
+        "%(str)s</a>.") % {
+        "num": len(fact.cards),
+        "id": fact.id,
+        # we're guaranteed that all fields will exist now
+        "str": stripHTML(fact[fact.fields[0].name]),
+        })
+
+def suspendAddedFact(self, fact):
+    self.parent.deck.suspendCards([card.id for card in fact.cards])
+
+# this is needs new anki!
+#def addSuspendedCards(self):
+#    old_addFact = self.addFact
+#    old_reportAddedFact = self.reportAddedFact
+#
+#    self.addFact = wrap(self.addFact, suspendAddedFact, "after")
+#    self.reportAddedFact = reportAddedSuspendedFact
+#
+#    self.addCards()
+#
+#    self.addFact = old_addFact
+#    self.reportAddedFact = old_reportAddedFact
+
 # ugh copy and paste..
 def addSuspendedCards(self):
     # make sure updated
@@ -39,17 +65,10 @@ The t you have provided would make an empty
 ques or answer on all cards."""), parent=self)
         return
 
-    # suspend cards
-    self.parent.deck.suspendCards([card.id for card in fact.cards])
+    # our special logic
+    self.suspendAddedFact(fact)
+    self.reportAddedSuspendedFact(fact)
 
-    self.dialog.status.append(
-        _("Added %(num)d suspended card(s) for <a href=\"%(id)d\">"
-        "%(str)s</a>.") % {
-        "num": len(fact.cards),
-        "id": fact.id,
-        # we're guaranteed that all fields will exist now
-        "str": stripHTML(fact[fact.fields[0].name]),
-        })
     # stop anything playing
     clearAudioQueue()
     self.parent.deck.setUndoEnd(n)
@@ -75,4 +94,6 @@ def addSuspendedButton(self):
 if not __name__ == "__main__":
     AddCards.addButtons = wrap(AddCards.addButtons, addSuspendedButton, "after")
     AddCards.addSuspendedCards = addSuspendedCards
+    AddCards.reportAddedSuspendedFact = reportAddedSuspendedFact
+    AddCards.suspendAddedFact = suspendAddedFact
 
