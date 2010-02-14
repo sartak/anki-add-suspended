@@ -46,6 +46,7 @@ def suspendAddedFact(self, fact):
 from anki.utils import stripHTML, parseTags
 from anki.sound import clearAudioQueue
 from ankiqt import ui
+from anki.errors import *
 def addSuspendedCards(self):
     # make sure updated
     self.editor.saveFieldsNow()
