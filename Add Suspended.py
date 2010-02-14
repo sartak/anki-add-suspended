@@ -16,9 +16,6 @@ from anki.hooks import wrap
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
-from anki.utils import stripHTML, parseTags
-from anki.sound import clearAudioQueue
-
 def reportAddedSuspendedFact(self, fact):
     self.dialog.status.append(
         _("Added %(num)d suspended card(s) for <a href=\"%(id)d\">"
@@ -46,6 +43,9 @@ def suspendAddedFact(self, fact):
 #    self.reportAddedFact = old_reportAddedFact
 
 # ugh copy and paste..
+from anki.utils import stripHTML, parseTags
+from anki.sound import clearAudioQueue
+from ankiqt import ui
 def addSuspendedCards(self):
     # make sure updated
     self.editor.saveFieldsNow()
