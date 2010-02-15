@@ -13,6 +13,7 @@ Shawn M Moore (sartak@gmail.com)
 
 from ankiqt.ui.addcards import AddCards
 from anki.hooks import wrap
+from anki.utils import stripHTML
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
@@ -28,14 +29,18 @@ def reportAddedSuspendedFact(self, fact):
 
 def suspendAddedFact(self, fact):
     self.parent.deck.suspendCards([card.id for card in fact.cards])
+    return fact
 
 # this is needs new anki!
 def addSuspendedCards(self):
     old_addFact = self.addFact
     old_reportAddedFact = self.reportAddedFact
 
-    self.addFact = wrap(self.addFact, suspendAddedFact, "after")
-    self.reportAddedFact = reportAddedSuspendedFact
+    suspendAddedFact_closed = lambda fact: suspendAddedFact(self, fact)
+    self.addFact = wrap(self.addFact, suspendAddedFact_closed, "after")
+
+    # haha python you crazy..
+    self.reportAddedFact = lambda fact: reportAddedSuspendedFact(self, fact)
 
     self.addCards()
 
@@ -53,6 +58,4 @@ def addSuspendedButton(self):
 if not __name__ == "__main__":
     AddCards.addButtons = wrap(AddCards.addButtons, addSuspendedButton, "after")
     AddCards.addSuspendedCards = addSuspendedCards
-    AddCards.reportAddedSuspendedFact = reportAddedSuspendedFact
-    AddCards.suspendAddedFact = suspendAddedFact
 
