@@ -55,7 +55,7 @@ def addSuspendedButton(self):
     self.connect(self.addSuspendedButton, SIGNAL("clicked()"), self.addSuspendedCards)
 
 #Setup our hook
-if not __name__ == "__main__":
+if __name__ != '__main__':
     AddCards.addButtons = wrap(AddCards.addButtons, addSuspendedButton, "after")
     AddCards.addSuspendedCards = addSuspendedCards
 
