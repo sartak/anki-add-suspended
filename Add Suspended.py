@@ -30,59 +30,17 @@ def suspendAddedFact(self, fact):
     self.parent.deck.suspendCards([card.id for card in fact.cards])
 
 # this is needs new anki!
-#def addSuspendedCards(self):
-#    old_addFact = self.addFact
-#    old_reportAddedFact = self.reportAddedFact
-#
-#    self.addFact = wrap(self.addFact, suspendAddedFact, "after")
-#    self.reportAddedFact = reportAddedSuspendedFact
-#
-#    self.addCards()
-#
-#    self.addFact = old_addFact
-#    self.reportAddedFact = old_reportAddedFact
-
-# ugh copy and paste..
-from anki.utils import stripHTML, parseTags
-from anki.sound import clearAudioQueue
-from ankiqt import ui
-from anki.errors import *
 def addSuspendedCards(self):
-    # make sure updated
-    self.editor.saveFieldsNow()
-    fact = self.editor.fact
-    n = _("Add")
-    self.parent.deck.setUndoStart(n)
-    try:
-        fact = self.parent.deck.addFact(fact)
-    except FactInvalidError:
-        ui.utils.showInfo(_(
-            "Some fields are missing or not unique."),
-                        parent=self, help="AddItems#AddError")
-        return
-    if not fact:
-        ui.utils.showWarning(_("""\
-The t you have provided would make an empty
-ques or answer on all cards."""), parent=self)
-        return
+    old_addFact = self.addFact
+    old_reportAddedFact = self.reportAddedFact
 
-    # our special logic
-    self.suspendAddedFact(fact)
-    self.reportAddedSuspendedFact(fact)
+    self.addFact = wrap(self.addFact, suspendAddedFact, "after")
+    self.reportAddedFact = reportAddedSuspendedFact
 
-    # stop anything playing
-    clearAudioQueue()
-    self.parent.deck.setUndoEnd(n)
-    self.parent.deck.checkDue()
-    self.parent.updateTitleBar()
-    self.parent.statusView.redraw()
-    # start a new fact
-    f = self.parent.deck.newFact()
-    f.tags = self.parent.deck.lastTags
-    self.editor.setFact(f, check=True, scroll=True)
-    # let completer know our extra tags
-    self.editor.tags.addTags(parseTags(self.parent.deck.lastTags))
-    self.maybeSave()
+    self.addCards()
+
+    self.addFact = old_addFact
+    self.reportAddedFact = old_reportAddedFact
 
 def addSuspendedButton(self):
     self.addSuspendedButton = QPushButton(_("Add Suspended"))
