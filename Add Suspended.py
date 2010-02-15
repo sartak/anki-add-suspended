@@ -2,7 +2,7 @@
 
 """
 DESCRIPTION:
-Adds a "Add Suspended" button to the Add Items dialog.
+Adds an "Add Suspended" button to the Add Items dialog.
 
 I personally use this for adding sentences with kanji I haven't
 learned yet, but are otherwise easy.
