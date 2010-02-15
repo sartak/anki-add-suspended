@@ -33,19 +33,18 @@ def suspendAddedFact(self, fact):
 
 # this is needs new anki!
 def addSuspendedCards(self):
-    old_addFact = self.addFact
-    old_reportAddedFact = self.reportAddedFact
+    old_addFact = AddCards.addFact
+    old_reportAddedFact = AddCards.reportAddedFact
 
-    suspendAddedFact_closed = lambda fact: suspendAddedFact(self, fact)
-    self.addFact = wrap(self.addFact, suspendAddedFact_closed, "after")
+    AddCards.addFact = wrap(AddCards.addFact, suspendAddedFact, "after")
 
     # haha python you crazy..
-    self.reportAddedFact = lambda fact: reportAddedSuspendedFact(self, fact)
+    AddCards.reportAddedFact = reportAddedSuspendedFact
 
     self.addCards()
 
-    self.addFact = old_addFact
-    self.reportAddedFact = old_reportAddedFact
+    AddCards.addFact = old_addFact
+    AddCards.reportAddedFact = old_reportAddedFact
 
 def addSuspendedButton(self):
     self.addSuspendedButton = QPushButton(_("Add Suspended"))
