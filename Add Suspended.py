@@ -37,8 +37,6 @@ def addSuspendedCards(self):
     old_reportAddedFact = AddCards.reportAddedFact
 
     AddCards.addFact = wrap(AddCards.addFact, suspendAddedFact, "after")
-
-    # haha python you crazy..
     AddCards.reportAddedFact = reportAddedSuspendedFact
 
     self.addCards()
